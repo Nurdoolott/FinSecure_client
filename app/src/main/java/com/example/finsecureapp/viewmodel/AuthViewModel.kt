@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.finsecureapp.data.local.datastore.TokenManager
+import com.example.finsecureapp.data.remote.dto.ForgotPasswordResponse
 import com.example.finsecureapp.data.remote.dto.LoginResponse
+import com.example.finsecureapp.data.remote.dto.ResetPasswordResponse
 import com.example.finsecureapp.data.remote.dto.StartRegisterResponse
 import com.example.finsecureapp.data.remote.dto.VerifyRegisterResponse
 import com.example.finsecureapp.data.repository.AuthRepository
@@ -26,6 +28,12 @@ class AuthViewModel(
 
     private val _verifyRegisterState = MutableStateFlow<Resource<VerifyRegisterResponse>?>(null)
     val verifyRegisterState: StateFlow<Resource<VerifyRegisterResponse>?> = _verifyRegisterState
+
+    private val _forgotPasswordState = MutableStateFlow<Resource<ForgotPasswordResponse>?>(null)
+    val forgotPasswordState: StateFlow<Resource<ForgotPasswordResponse>?> = _forgotPasswordState
+
+    private val _resetPasswordState = MutableStateFlow<Resource<ResetPasswordResponse>?>(null)
+    val resetPasswordState: StateFlow<Resource<ResetPasswordResponse>?> = _resetPasswordState
 
     fun login(phoneNumber: String, password: String) {
         viewModelScope.launch {
@@ -51,6 +59,20 @@ class AuthViewModel(
         viewModelScope.launch {
             _verifyRegisterState.value = Resource.Loading
             _verifyRegisterState.value = repository.verifyRegister(pendingRegistrationId, otpCode)
+        }
+    }
+
+    fun forgotPassword(phoneNumber: String) {
+        viewModelScope.launch {
+            _forgotPasswordState.value = Resource.Loading
+            _forgotPasswordState.value = repository.forgotPassword(phoneNumber)
+        }
+    }
+
+    fun resetPassword(pendingResetId: String, otpCode: String, newPassword: String) {
+        viewModelScope.launch {
+            _resetPasswordState.value = Resource.Loading
+            _resetPasswordState.value = repository.resetPassword(pendingResetId, otpCode, newPassword)
         }
     }
 }

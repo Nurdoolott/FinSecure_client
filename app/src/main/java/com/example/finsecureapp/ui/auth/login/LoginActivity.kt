@@ -45,6 +45,9 @@ class LoginActivity : AppCompatActivity() {
         binding.tvGoToRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+        binding.tvForgotPassword.setOnClickListener {
+            startActivity(Intent(this, com.example.finsecureapp.ui.auth.forgot.ForgotPasswordActivity::class.java))
+        }
 
         observeLoginState()
     }
