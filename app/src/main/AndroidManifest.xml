@@ -32,6 +32,7 @@
         <activity android:name=".ui.auth.verify.VerifyOtpActivity" />
         <activity android:name=".ui.auth.forgot.ForgotPasswordActivity" />
         <activity android:name=".ui.auth.reset.ResetPasswordActivity" />
+        <activity android:name=".ui.receipt.ReceiptActivity" />
     </application>
 
 </manifest>

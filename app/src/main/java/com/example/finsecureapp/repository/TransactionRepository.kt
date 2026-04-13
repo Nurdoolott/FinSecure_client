@@ -8,9 +8,21 @@ import com.example.finsecureapp.utils.Resource
 
 class TransactionRepository {
 
-    suspend fun transfer(token: String, request: TransferRequest): Resource<TransferResponse> {
+    suspend fun transfer(
+        token: String,
+        transferMethod: String,
+        receiverValue: String,
+        amount: Double
+    ): Resource<TransferResponse> {
         return try {
-            val response = RetrofitInstance.transactionApi.transferMoney("Bearer $token", request)
+            val response = RetrofitInstance.transactionApi.transferMoney(
+                "Bearer $token",
+                TransferRequest(
+                    transferMethod = transferMethod,
+                    receiverValue = receiverValue,
+                    amount = amount
+                )
+            )
 
             if (response.isSuccessful && response.body() != null) {
                 Resource.Success(response.body()!!)

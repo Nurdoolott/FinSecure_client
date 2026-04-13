@@ -1,6 +1,7 @@
 package com.example.finsecureapp.data.remote.dto
 
 data class TransferRequest(
-    val receiverAccountNumber: String,
+    val transferMethod: String,
+    val receiverValue: String,
     val amount: Double
 )

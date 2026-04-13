@@ -21,7 +21,7 @@ class TransactionViewModel(
     private val _transferState = MutableStateFlow<Resource<TransferResponse>?>(null)
     val transferState: StateFlow<Resource<TransferResponse>?> = _transferState
 
-    fun transfer(receiver: String, amount: Double) {
+    fun transfer(transferMethod: String, receiverValue: String, amount: Double) {
         viewModelScope.launch {
             _transferState.value = Resource.Loading
 
@@ -32,12 +32,12 @@ class TransactionViewModel(
                 return@launch
             }
 
-            val request = TransferRequest(
-                receiverAccountNumber = receiver,
+            _transferState.value = repository.transfer(
+                token = token,
+                transferMethod = transferMethod,
+                receiverValue = receiverValue,
                 amount = amount
             )
-
-            _transferState.value = repository.transfer(token, request)
         }
     }
 }

@@ -33,15 +33,21 @@ class TransferActivity : AppCompatActivity() {
         )[TransactionViewModel::class.java]
 
         binding.btnSend.setOnClickListener {
-            val receiver = binding.etReceiver.text.toString().trim()
+            val receiverValue = binding.etReceiver.text.toString().trim()
             val amount = binding.etAmount.text.toString().trim().toDoubleOrNull()
 
-            if (receiver.isEmpty() || amount == null) {
+            val transferMethod = if (binding.rbByPhone.isChecked) {
+                "PHONE"
+            } else {
+                "ACCOUNT"
+            }
+
+            if (receiverValue.isEmpty() || amount == null) {
                 Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            viewModel.transfer(receiver, amount)
+            viewModel.transfer(transferMethod, receiverValue, amount)
         }
 
         observeTransfer()
@@ -57,11 +63,22 @@ class TransferActivity : AppCompatActivity() {
 
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(
+
+                        val tx = state.data.transaction
+
+                        val intent = android.content.Intent(
                             this@TransferActivity,
-                            state.data.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            com.example.finsecureapp.ui.receipt.ReceiptActivity::class.java
+                        ).apply {
+                            putExtra("amount", tx.amount)
+                            putExtra("receiverValue", tx.receiverValue)
+                            putExtra("transferMethod", tx.transferMethod)
+                            putExtra("status", tx.status)
+                            putExtra("createdAt", tx.createdAt)
+                        }
+
+                        startActivity(intent)
+                        finish()
                     }
 
                     is Resource.Error -> {
