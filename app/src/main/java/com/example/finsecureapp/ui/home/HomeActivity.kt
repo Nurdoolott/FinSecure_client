@@ -54,6 +54,10 @@ class HomeActivity : AppCompatActivity() {
         binding.btnNews.setOnClickListener {
             startActivity(Intent(this, NewsActivity::class.java))
         }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadBalance()
+        }
+
 
         observeBalanceState()
         viewModel.loadBalance()
@@ -74,6 +78,7 @@ class HomeActivity : AppCompatActivity() {
 
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.swipeRefreshLayout.isRefreshing = false
                         binding.tvAccountNumber.text = "Account Number: ${state.data.accountNumber}"
                         binding.tvBalance.text = "Balance: ${state.data.balance}"
                         binding.tvCurrency.text = "Currency: ${state.data.currency}"
@@ -81,6 +86,7 @@ class HomeActivity : AppCompatActivity() {
 
                     is Resource.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.swipeRefreshLayout.isRefreshing = false
                         Toast.makeText(this@HomeActivity, state.message, Toast.LENGTH_LONG).show()
                     }
 

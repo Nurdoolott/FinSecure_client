@@ -29,6 +29,9 @@ class HistoryActivity : AppCompatActivity() {
         adapter = TransactionHistoryAdapter()
         binding.recyclerViewHistory.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewHistory.adapter = adapter
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadHistory()
+        }
 
         viewModel = ViewModelProvider(
             this,
@@ -52,11 +55,13 @@ class HistoryActivity : AppCompatActivity() {
 
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.swipeRefreshLayout.isRefreshing = false
                         adapter.submitList(state.data)
                     }
 
                     is Resource.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.swipeRefreshLayout.isRefreshing = false
                         Toast.makeText(this@HistoryActivity, state.message, Toast.LENGTH_LONG).show()
                     }
 
